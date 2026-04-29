@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Agents vs. Automation Flows — Interactive Guide</title>
+<style>
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  background: #f4f6f9; color: #23272f; line-height: 1.6;
+}
+
+/* ===== NAV ===== */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(255,255,255,0.92); backdrop-filter: blur(10px);
+  border-bottom: 1px solid #e0e4ea; padding: 0 2rem;
+  display: flex; align-items: center; justify-content: space-between; height: 56px;
+}
+nav .brand { font-weight: 700; font-size: 1.05rem; color: #1a1a2e; letter-spacing: -0.3px; }
+nav .brand span { color: #6c5ce7; }
+nav ul { list-style: none; display: flex; gap: 0.25rem; }
+nav ul li a {
+  text-decoration: none; color: #555; font-size: 0.85rem; font-weight: 500;
+  padding: 0.45rem 0.85rem; border-radius: 8px; transition: all 0.2s;
+}
+nav ul li a:hover { background: #eef0f7; color: #6c5ce7; }
+
+/* ===== HERO ===== */
+.hero {
+  text-align: center; padding: 4.5rem 2rem 3.5rem;
+  background: linear-gradient(135deg, #1a1a2e 0%, #2d2b55 50%, #4a3f8a 100%);
+  color: #fff; position: relative; overflow: hidden;
+}
+.hero::after {
+  content: ""; position: absolute; bottom: -2px; left: 0; right: 0; height: 60px;
+  background: linear-gradient(to bottom, transparent, #f4f6f9);
+}
+.hero h1 { font-size: 2.6rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 0.6rem; }
+.hero h1 .accent-auto { color: #74b9ff; }
+.hero h1 .accent-ai { color: #a29bfe; }
+.hero .subtitle { font-size: 1.15rem; color: rgba(255,255,255,0.78); max-width: 600px; margin: 0 auto 1.5rem; }
+.hero .badge { display: inline-block; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
+  padding: 0.35rem 1rem; border-radius: 20px; font-size: 0.8rem; color: rgba(255,255,255,0.85); }
+
+/* ===== SECTIONS ===== */
+section { max-width: 1100px; margin: 0 auto; padding: 3rem 1.5rem; }
+.section-title { text-align: center; margin-bottom: 0.4rem; font-size: 1.75rem; font-weight: 700; color: #1a1a2e; }
+.section-subtitle { text-align: center; color: #666; margin-bottom: 2.5rem; font-size: 1rem; }
+
+/* ===== TOOLTIP ===== */
+.term {
+  border-bottom: 1.5px dotted #6c5ce7; cursor: help; position: relative; color: #3d3680; font-weight: 500;
+}
+.term .tip {
+  visibility: hidden; opacity: 0; position: absolute; bottom: 130%; left: 50%; transform: translateX(-50%);
+  background: #23272f; color: #fff; padding: 0.55rem 0.85rem; border-radius: 8px;
+  font-size: 0.78rem; font-weight: 400; width: max-content; max-width: 260px;
+  line-height: 1.45; pointer-events: none; transition: opacity 0.2s; z-index: 50;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+}
+.term .tip::after {
+  content: ""; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+  border: 6px solid transparent; border-top-color: #23272f;
+}
+.term:hover .tip { visibility: visible; opacity: 1; }
+
+/* ===== SLIDER SECTION ===== */
+.slider-area { background: #fff; border-radius: 16px; padding: 2.5rem 2rem; box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
+.spectrum-labels { display: flex; justify-content: space-between; margin-bottom: 0.5rem; }
+.spectrum-labels span { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.spectrum-labels .label-auto { color: #0984e3; }
+.spectrum-labels .label-ai { color: #6c5ce7; }
+
+/* Slider Track */
+.slider-container { position: relative; margin-bottom: 1rem; }
+input[type="range"] {
+  -webkit-appearance: none; appearance: none; width: 100%; height: 10px;
+  background: linear-gradient(90deg, #74b9ff 0%, #a29bfe 50%, #6c5ce7 100%);
+  border-radius: 6px; outline: none; cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none; width: 28px; height: 28px;
+  background: #fff; border: 3px solid #6c5ce7; border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(108,92,231,0.35); cursor: grab; transition: box-shadow 0.2s;
+}
+input[type="range"]::-webkit-slider-thumb:active { cursor: grabbing; box-shadow: 0 2px 16px rgba(108,92,231,0.5); }
+input[type="range"]::-moz-range-thumb {
+  width: 28px; height: 28px; background: #fff; border: 3px solid #6c5ce7;
+  border-radius: 50%; box-shadow: 0 2px 8px rgba(108,92,231,0.35); cursor: grab;
+}
+
+/* Zone Indicator */
+.zone-indicator {
+  text-align: center; margin: 1rem 0 1.5rem; transition: all 0.3s;
+}
+.zone-indicator .zone-badge {
+  display: inline-block; padding: 0.4rem 1.2rem; border-radius: 20px;
+  font-weight: 700; font-size: 0.95rem; letter-spacing: 0.3px; transition: all 0.3s;
+}
+.zone-auto { background: #dfe6e9; color: #0984e3; }
+.zone-hybrid { background: #f3f0ff; color: #6c5ce7; }
+.zone-ai { background: #e8dcff; color: #5b2eab; }
+
+/* Dimensions Row */
+.dimensions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; margin-bottom: 2rem; }
+.dim-card {
+  text-align: center; padding: 0.85rem 0.5rem; border-radius: 10px;
+  background: #f8f9fc; border: 1.5px solid #e8eaf0; transition: all 0.35s;
+}
+.dim-card.active-auto { border-color: #74b9ff; background: #eaf4ff; }
+.dim-card.active-ai { border-color: #a29bfe; background: #f3f0ff; }
+.dim-card .dim-icon { font-size: 1.3rem; margin-bottom: 0.2rem; }
+.dim-card .dim-left, .dim-card .dim-right { font-size: 0.72rem; color: #888; }
+.dim-card .dim-active-label { font-size: 0.82rem; font-weight: 700; margin-top: 0.15rem; }
+
+/* Dynamic Output */
+.dynamic-output { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.output-panel { background: #f8f9fc; border-radius: 12px; padding: 1.5rem; border: 1px solid #e8eaf0; }
+.output-panel h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.4rem; }
+.output-panel ul { list-style: none; padding: 0; }
+.output-panel ul li { padding: 0.4rem 0; font-size: 0.9rem; display: flex; align-items: flex-start; gap: 0.45rem; }
+.output-panel ul li .icon { flex-shrink: 0; }
+.explanation-box {
+  grid-column: 1 / -1; background: linear-gradient(135deg, #f8f9fc, #f0edff);
+  border-radius: 12px; padding: 1.5rem; border: 1px solid #e0ddf5;
+}
+.explanation-box h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+.explanation-box p { font-size: 0.92rem; color: #444; }
+
+/* ===== COMPARISON PANELS ===== */
+.comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.comp-card {
+  background: #fff; border-radius: 14px; padding: 2rem 1.75rem;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.05); border-top: 4px solid #ccc;
+}
+.comp-card.auto-card { border-top-color: #0984e3; }
+.comp-card.ai-card { border-top-color: #6c5ce7; }
+.comp-card h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.3rem; display: flex; align-items: center; gap: 0.5rem; }
+.comp-card .card-tag { font-size: 0.78rem; color: #888; margin-bottom: 1.2rem; }
+.comp-card h4 { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin: 1rem 0 0.5rem; }
+.comp-card h4.pros-h { color: #00b894; }
+.comp-card h4.cons-h { color: #d63031; }
+.comp-card ul { list-style: none; padding: 0; }
+.comp-card ul li { font-size: 0.9rem; padding: 0.3rem 0; display: flex; align-items: flex-start; gap: 0.4rem; }
+
+/* ===== SCENARIO GRID ===== */
+.scenario-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.25rem; }
+.scenario-card {
+  background: #fff; border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  border-left: 4px solid #ccc; transition: transform 0.2s, box-shadow 0.2s;
+}
+.scenario-card:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+.scenario-card.sc-auto { border-left-color: #0984e3; }
+.scenario-card.sc-hybrid { border-left-color: #fdcb6e; }
+.scenario-card.sc-ai { border-left-color: #6c5ce7; }
+.scenario-card .sc-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.6rem; }
+.scenario-card .sc-icon { font-size: 1.6rem; }
+.scenario-card .sc-badge {
+  padding: 0.2rem 0.65rem; border-radius: 12px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+}
+.sc-badge.b-auto { background: #dfe6e9; color: #0984e3; }
+.sc-badge.b-hybrid { background: #ffeaa7; color: #b57c00; }
+.sc-badge.b-ai { background: #e8dcff; color: #5b2eab; }
+.scenario-card h4 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.35rem; }
+.scenario-card .sc-desc { font-size: 0.85rem; color: #555; margin-bottom: 0.6rem; }
+.scenario-card .sc-rationale { font-size: 0.82rem; color: #777; font-style: italic; border-top: 1px solid #eee; padding-top: 0.5rem; }
+
+/* ===== QUICK ASSESSMENT ===== */
+.assessment-box {
+  background: #fff; border-radius: 16px; padding: 2.5rem 2rem;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.06); max-width: 700px; margin: 0 auto;
+}
+.qa-question {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1rem 0; border-bottom: 1px solid #f0f0f0;
+}
+.qa-question:last-of-type { border-bottom: none; }
+.qa-question .qa-text { font-size: 0.95rem; font-weight: 500; flex: 1; padding-right: 1rem; }
+.qa-btns { display: flex; gap: 0.5rem; }
+.qa-btn {
+  padding: 0.4rem 1.2rem; border-radius: 8px; border: 1.5px solid #ddd;
+  background: #fff; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.2s;
+}
+.qa-btn:hover { border-color: #6c5ce7; color: #6c5ce7; }
+.qa-btn.selected-yes { background: #00b894; color: #fff; border-color: #00b894; }
+.qa-btn.selected-no { background: #636e72; color: #fff; border-color: #636e72; }
+.qa-result {
+  margin-top: 1.5rem; padding: 1.25rem; border-radius: 12px; text-align: center;
+  font-size: 1rem; font-weight: 600; transition: all 0.3s;
+}
+.qa-result.res-auto { background: #eaf4ff; color: #0984e3; }
+.qa-result.res-hybrid { background: #ffeaa7; color: #b57c00; }
+.qa-result.res-ai { background: #f3f0ff; color: #6c5ce7; }
+
+/* ===== DECISION GUIDANCE ===== */
+.guidance-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.25rem; }
+.guide-card {
+  background: #fff; border-radius: 14px; padding: 1.75rem; box-shadow: 0 2px 14px rgba(0,0,0,0.05);
+  border-top: 4px solid #ccc;
+}
+.guide-card.g-auto { border-top-color: #0984e3; }
+.guide-card.g-hybrid { border-top-color: #fdcb6e; }
+.guide-card.g-ai { border-top-color: #6c5ce7; }
+.guide-card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.4rem; }
+.guide-card ul { list-style: none; padding: 0; }
+.guide-card ul li { font-size: 0.88rem; padding: 0.35rem 0; display: flex; align-items: flex-start; gap: 0.4rem; }
+.guide-card ul li::before { content: "→"; color: #888; flex-shrink: 0; }
+
+/* ===== FOOTER ===== */
+footer {
+  text-align: center; padding: 2rem; margin-top: 1rem;
+  color: #999; font-size: 0.8rem; border-top: 1px solid #e8eaf0; background: #fff;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  nav ul { display: none; }
+  .hero h1 { font-size: 1.8rem; }
+  .dimensions { grid-template-columns: 1fr 1fr; }
+  .dynamic-output, .comparison-grid { grid-template-columns: 1fr; }
+  .guidance-grid { grid-template-columns: 1fr; }
+  .scenario-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== NAV ===== -->
+<nav>
+  <div class="brand">⚡ <span>AI vs. Automation</span> Guide</div>
+  <ul>
+    <li><a href="#slider-section">Spectrum Explorer</a></li>
+    <li><a href="#comparison-section">Comparison</a></li>
+    <li><a href="#scenarios-section">Scenarios</a></li>
+    <li><a href="#assessment-section">Quick Assessment</a></li>
+    <li><a href="#guidance-section">Decision Guide</a></li>
+  </ul>
+</nav>
+
+<!-- ===== HERO ===== -->
+<header class="hero">
+  <h1><span class="accent-auto">Automation Flows</span> vs. <span class="accent-ai">AI Agents</span></h1>
+  <p class="subtitle">An Interactive Guide for Enterprise Decision-Making</p>
+  <span class="badge">🏢 Internal Training Resource — Technology Strategy</span>
+</header>
+
+<!-- ===== SPECTRUM SLIDER ===== -->
+<section id="slider-section">
+  <h2 class="section-title">Spectrum Explorer</h2>
+  <p class="section-subtitle">Move the slider to see which approach fits your task characteristics</p>
+
+  <div class="slider-area">
+    <div class="spectrum-labels">
+      <span class="label-auto">⚙️ Automation Flows</span>
+      <span class="label-ai">🤖 AI Agents</span>
+    </div>
+    <div class="slider-container">
+      <input type="range" id="mainSlider" min="0" max="100" value="50">
+    </div>
+    <div class="zone-indicator">
+      <span class="zone-badge zone-hybrid" id="zoneBadge">🔀 Hybrid Zone — 50%</span>
+    </div>
+
+    <!-- Dimension Cards -->
+    <div class="dimensions">
+      <div class="dim-card" id="dim0">
+        <div class="dim-icon">🔁</div>
+        <div class="dim-left">Predictable</div>
+        <div class="dim-active-label" id="dimLabel0">Balanced</div>
+        <div class="dim-right">Variable</div>
+      </div>
+      <div class="dim-card" id="dim1">
+        <div class="dim-icon">📊</div>
+        <div class="dim-left">Structured</div>
+        <div class="dim-active-label" id="dimLabel1">Balanced</div>
+        <div class="dim-right">Unstructured</div>
+      </div>
+      <div class="dim-card" id="dim2">
+        <div class="dim-icon">📏</div>
+        <div class="dim-left">Fixed Rules</div>
+        <div class="dim-active-label" id="dimLabel2">Balanced</div>
+        <div class="dim-right">Contextual</div>
+      </div>
+      <div class="dim-card" id="dim3">
+        <div class="dim-icon">🔍</div>
+        <div class="dim-left">Low Ambiguity</div>
+        <div class="dim-active-label" id="dimLabel3">Balanced</div>
+        <div class="dim-right">High Ambiguity</div>
+      </div>
+    </div>
+
+    <!-- Dynamic Content -->
+    <div class="dynamic-output">
+      <div class="output-panel" id="tasksPanel">
+        <h3>📋 Example Tasks</h3>
+        <ul id="tasksList"></ul>
+      </div>
+      <div class="output-panel" id="prosConsPanel">
+        <h3>⚖️ Key Trade-offs</h3>
+        <ul id="tradeoffList"></ul>
+      </div>
+      <div class="explanation-box" id="explanationBox">
+        <h3>💡 Why This Approach Fits</h3>
+        <p id="explanationText"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== COMPARISON ===== -->
+<section id="comparison-section">
+  <h2 class="section-title">Side-by-Side Comparison</h2>
+  <p class="section-subtitle">Understand the strengths and limitations of each approach</p>
+
+  <div class="comparison-grid">
+    <!-- Automation Flows -->
+    <div class="comp-card auto-card">
+      <h3>⚙️ Automation Flows</h3>
+      <p class="card-tag"><span class="term"><span class="tip">A system that follows pre-defined, fixed rules and always produces the same output for the same input — no variation or judgment involved.</span>Rule-based</span>, <span class="term"><span class="tip">Producing the same result every time given the same input. There is no randomness or variability in how the task is performed.</span>deterministic</span>, repeatable workflows</p>
+      <h4 class="pros-h">✅ Strengths</h4>
+      <ul>
+        <li><span class="icon">✅</span> <strong>Reliability</strong> — Consistent output every time, no surprises</li>
+        <li><span class="icon">✅</span> <strong>Auditability</strong> — Every step is logged and traceable</li>
+        <li><span class="icon">✅</span> <strong>Speed</strong> — Executes predefined steps rapidly at scale</li>
+        <li><span class="icon">✅</span> <strong>Lower cost</strong> — Less compute and oversight required</li>
+        <li><span class="icon">✅</span> <strong>Easy to maintain</strong> — Clear logic that teams can update</li>
+      </ul>
+      <h4 class="cons-h">⚠️ Limitations</h4>
+      <ul>
+        <li><span class="icon">⚠️</span> <strong>Limited flexibility</strong> — Cannot handle exceptions or novel cases</li>
+        <li><span class="icon">⚠️</span> <strong>Brittle to change</strong> — Process changes require manual updates</li>
+        <li><span class="icon">⚠️</span> <strong>No learning</strong> — Does not improve from experience</li>
+        <li><span class="icon">⚠️</span> <strong>Poor with ambiguity</strong> — Fails when inputs are unclear</li>
+      </ul>
+    </div>
+
+    <!-- AI Agents -->
+    <div class="comp-card ai-card">
+      <h3>🤖 AI Agents</h3>
+      <p class="card-tag"><span class="term"><span class="tip">A system that can change its behavior based on new information, learning from context rather than following a fixed script.</span>Adaptive</span>, <span class="term"><span class="tip">The ability to make decisions based on surrounding information — interpreting meaning, intent, and nuance rather than following rigid rules.</span>contextual reasoning</span>, autonomous systems</p>
+      <h4 class="pros-h">✅ Strengths</h4>
+      <ul>
+        <li><span class="icon">✅</span> <strong>Adaptability</strong> — Adjusts behavior based on context and data</li>
+        <li><span class="icon">✅</span> <strong>Reasoning</strong> — Can interpret ambiguous or complex inputs</li>
+        <li><span class="icon">✅</span> <strong>Learning</strong> — Improves over time with feedback</li>
+        <li><span class="icon">✅</span> <strong>Handles ambiguity</strong> — Works with unstructured data and edge cases</li>
+        <li><span class="icon">✅</span> <strong>Natural interaction</strong> — Communicates in plain language</li>
+      </ul>
+      <h4 class="cons-h">⚠️ Limitations</h4>
+      <ul>
+        <li><span class="icon">⚠️</span> <strong>Unpredictability</strong> — Outputs may vary between runs</li>
+        <li><span class="icon">⚠️</span> <strong>Higher cost</strong> — More compute, tokens, and infrastructure</li>
+        <li><span class="icon">⚠️</span> <strong>Governance complexity</strong> — Harder to control and audit</li>
+        <li><span class="icon">⚠️</span> <strong>Risk of errors</strong> — May hallucinate or misinterpret context</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SCENARIOS ===== -->
+<section id="scenarios-section">
+  <h2 class="section-title">Enterprise Scenarios</h2>
+  <p class="section-subtitle">See how each approach applies to common enterprise workflows</p>
+
+  <div class="scenario-grid">
+    <!-- Invoice Processing -->
+    <div class="scenario-card sc-auto">
+      <div class="sc-header">
+        <span class="sc-icon">🧾</span>
+        <span class="sc-badge b-auto">Automation</span>
+      </div>
+      <h4>Invoice Processing</h4>
+      <p class="sc-desc">Extracting fields from standardized invoices, matching to purchase orders, routing for approval, and posting to ERP systems.</p>
+      <p class="sc-rationale">Best handled by automation — invoices follow known formats, rules for matching and approval are fixed, and errors require traceability.</p>
+    </div>
+
+    <!-- IT Ticket Triage -->
+    <div class="scenario-card sc-hybrid">
+      <div class="sc-header">
+        <span class="sc-icon">🎫</span>
+        <span class="sc-badge b-hybrid">Hybrid</span>
+      </div>
+      <h4>IT Ticket Triage</h4>
+      <p class="sc-desc">Classifying incoming support tickets by urgency, category, and team assignment based on ticket content.</p>
+      <p class="sc-rationale">Simple routing can be automated, but interpreting ambiguous descriptions and assigning priority may benefit from an AI agent's natural language understanding.</p>
+    </div>
+
+    <!-- Employee Onboarding -->
+    <div class="scenario-card sc-auto">
+      <div class="sc-header">
+        <span class="sc-icon">👤</span>
+        <span class="sc-badge b-auto">Automation</span>
+      </div>
+      <h4>Employee Onboarding</h4>
+      <p class="sc-desc">Provisioning accounts, sending welcome emails, scheduling orientation, and assigning training modules for new hires.</p>
+      <p class="sc-rationale">Highly repeatable and sequential — automation flows ensure every step is completed consistently and on time without manual oversight.</p>
+    </div>
+
+    <!-- Email Classification -->
+    <div class="scenario-card sc-hybrid">
+      <div class="sc-header">
+        <span class="sc-icon">📧</span>
+        <span class="sc-badge b-hybrid">Hybrid</span>
+      </div>
+      <h4>Email Classification</h4>
+      <p class="sc-desc">Sorting incoming emails by intent, urgency, and department — then routing to the appropriate queue or responder.</p>
+      <p class="sc-rationale">Rule-based filters handle known patterns, but an AI agent adds value for ambiguous, multi-topic, or nuanced messages that defy simple keyword rules.</p>
+    </div>
+
+    <!-- Data Synchronization -->
+    <div class="scenario-card sc-auto">
+      <div class="sc-header">
+        <span class="sc-icon">🔄</span>
+        <span class="sc-badge b-auto">Automation</span>
+      </div>
+      <h4>Data Synchronization</h4>
+      <p class="sc-desc">Keeping records consistent across CRM, ERP, HR, and finance systems by syncing updates on a scheduled or event-triggered basis.</p>
+      <p class="sc-rationale">Purely structural — field mappings are predefined, rules are fixed, and the task requires speed and reliability over interpretation.</p>
+    </div>
+
+    <!-- Knowledge Base Assistance -->
+    <div class="scenario-card sc-ai">
+      <div class="sc-header">
+        <span class="sc-icon">📚</span>
+        <span class="sc-badge b-ai">AI Agent</span>
+      </div>
+      <h4>Knowledge Base Assistance</h4>
+      <p class="sc-desc">Answering employee questions by searching policies, procedures, and internal documentation — then providing summarized, contextual answers.</p>
+      <p class="sc-rationale">Requires understanding natural language queries, searching across unstructured documents, and reasoning about relevance — ideal for AI agents.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== QUICK ASSESSMENT ===== -->
+<section id="assessment-section">
+  <h2 class="section-title">Quick Assessment</h2>
+  <p class="section-subtitle">Answer four questions about your task to get a recommendation</p>
+
+  <div class="assessment-box">
+    <div class="qa-question" data-q="0">
+      <span class="qa-text">1. Does the task follow a <strong>fixed, repeatable</strong> set of steps every time?</span>
+      <div class="qa-btns">
+        <button class="qa-btn" data-val="yes" onclick="qaAnswer(0,'yes',this)">Yes</button>
+        <button class="qa-btn" data-val="no" onclick="qaAnswer(0,'no',this)">No</button>
+      </div>
+    </div>
+    <div class="qa-question" data-q="1">
+      <span class="qa-text">2. Does the task involve <strong>unstructured data</strong> (free text, images, varied formats)?</span>
+      <div class="qa-btns">
+        <button class="qa-btn" data-val="yes" onclick="qaAnswer(1,'yes',this)">Yes</button>
+        <button class="qa-btn" data-val="no" onclick="qaAnswer(1,'no',this)">No</button>
+      </div>
+    </div>
+    <div class="qa-question" data-q="2">
+      <span class="qa-text">3. Is <strong>auditability and traceability</strong> a strict requirement?</span>
+      <div class="qa-btns">
+        <button class="qa-btn" data-val="yes" onclick="qaAnswer(2,'yes',this)">Yes</button>
+        <button class="qa-btn" data-val="no" onclick="qaAnswer(2,'no',this)">No</button>
+      </div>
+    </div>
+    <div class="qa-question" data-q="3">
+      <span class="qa-text">4. Does the task require <strong>judgment or contextual interpretation</strong> of inputs?</span>
+      <div class="qa-btns">
+        <button class="qa-btn" data-val="yes" onclick="qaAnswer(3,'yes',this)">Yes</button>
+        <button class="qa-btn" data-val="no" onclick="qaAnswer(3,'no',this)">No</button>
+      </div>
+    </div>
+    <div class="qa-result" id="qaResult" style="display:none;"></div>
+  </div>
+</section>
+
+<!-- ===== DECISION GUIDANCE ===== -->
+<section id="guidance-section">
+  <h2 class="section-title">Decision Guidance</h2>
+  <p class="section-subtitle">Quick-reference rules of thumb for choosing the right approach</p>
+
+  <div class="guidance-grid">
+    <div class="guide-card g-auto">
+      <h3>⚙️ Use Automation Flows when…</h3>
+      <ul>
+        <li>The process follows well-defined, repeatable steps</li>
+        <li>Inputs and outputs are structured and predictable</li>
+        <li>Compliance and auditability are critical</li>
+        <li>Speed and cost-efficiency are top priorities</li>
+        <li>The task doesn't require interpreting ambiguous data</li>
+        <li>Changes to business rules are infrequent</li>
+      </ul>
+    </div>
+    <div class="guide-card g-hybrid">
+      <h3>🔀 Consider a Hybrid when…</h3>
+      <ul>
+        <li>The core process is structured but has exception paths</li>
+        <li>Some inputs need classification before routing</li>
+        <li>You want automation speed with AI-assisted triage</li>
+        <li>Certain steps need human-like interpretation</li>
+        <li>Volume is high but edge cases are common</li>
+        <li>You want to pilot AI capabilities incrementally</li>
+      </ul>
+    </div>
+    <div class="guide-card g-ai">
+      <h3>🤖 Use AI Agents when…</h3>
+      <ul>
+        <li>Tasks require understanding natural language or context</li>
+        <li>Inputs are varied, messy, or unstructured</li>
+        <li>Decision-making involves nuance or ambiguity</li>
+        <li>The process benefits from learning and adaptation</li>
+        <li>Users need interactive, conversational assistance</li>
+        <li>Rigid rules cannot capture the needed logic</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <p>🔒 Internal Use Only — 2026 &nbsp;|&nbsp; AI Agents vs. Automation Flows — Interactive Decision Guide</p>
+</footer>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+// ========== SLIDER DATA ==========
+const sliderData = [
+  { // 0-15: Strong Automation
+    zone: "Automation Zone", zoneClass: "zone-auto",
+    dims: ["Predictable","Structured","Fixed Rules","Low Ambiguity"],
+    tasks: [
+      "⚙️ Scheduled data synchronization between CRM and ERP",
+      "⚙️ Auto-provisioning user accounts on employee hire",
+      "⚙️ Rule-based invoice matching against purchase orders",
+      "⚙️ Sending automated status notification emails"
+    ],
+    tradeoffs: [
+      {icon:"✅", text:"Highest reliability and consistency"},
+      {icon:"✅", text:"Full audit trail for every execution"},
+      {icon:"✅", text:"Lowest operational cost at scale"},
+      {icon:"💡", text:"No AI overhead or governance burden"}
+    ],
+    explanation: "At this end of the spectrum, tasks are highly predictable with structured inputs and clear rules. Automation flows excel here — they execute faster, cost less, and produce consistent, auditable results. AI agents would add unnecessary complexity and cost without meaningful benefit."
+  },
+  { // 16-35: Leaning Automation
+    zone: "Leaning Automation", zoneClass: "zone-auto",
+    dims: ["Mostly Predictable","Mostly Structured","Mostly Fixed Rules","Moderate-Low Ambiguity"],
+    tasks: [
+      "⚙️ Employee onboarding task orchestration",
+      "⚙️ Approval routing based on expense thresholds",
+      "🔀 Basic email sorting with keyword-based filters",
+      "⚙️ Scheduled report generation and distribution"
+    ],
+    tradeoffs: [
+      {icon:"✅", text:"Automation handles the majority of cases well"},
+      {icon:"✅", text:"Clear logic is easy for teams to maintain"},
+      {icon:"💡", text:"A few edge cases may need manual handling"},
+      {icon:"💡", text:"Consider AI only for specific exception paths"}
+    ],
+    explanation: "Most tasks here are well-suited for automation flows. The inputs are largely predictable and rules cover the majority of scenarios. While a few edge cases may slip through, it's typically more efficient to handle those manually or with simple exception logic rather than introducing AI agents."
+  },
+  { // 36-65: Hybrid
+    zone: "Hybrid Zone", zoneClass: "zone-hybrid",
+    dims: ["Mixed","Semi-Structured","Rule + Context","Moderate Ambiguity"],
+    tasks: [
+      "🔀 IT ticket triage — auto-route simple issues, AI for complex ones",
+      "🔀 Email classification with intent detection for edge cases",
+      "🔀 Expense report review — automation for amounts, AI for policy judgment",
+      "🔀 Customer inquiry routing — rules for standard queries, AI for nuanced ones"
+    ],
+    tradeoffs: [
+      {icon:"⚖️", text:"Automation provides the reliable backbone"},
+      {icon:"⚖️", text:"AI handles exceptions and ambiguous inputs"},
+      {icon:"💡", text:"Requires clear handoff boundaries between systems"},
+      {icon:"💡", text:"Governance needed for the AI-assisted portions"}
+    ],
+    explanation: "This middle ground is where many enterprise processes live. The core workflow follows predictable patterns well-suited for automation, but certain steps involve ambiguous inputs, free text, or judgment calls where an AI agent adds real value. A hybrid approach lets you combine the reliability of automation with the adaptability of AI — routing the straightforward cases through flows and escalating complex ones to an agent."
+  },
+  { // 66-85: Leaning AI
+    zone: "Leaning AI Agent", zoneClass: "zone-ai",
+    dims: ["Mostly Variable","Mostly Unstructured","Mostly Contextual","Moderate-High Ambiguity"],
+    tasks: [
+      "🤖 Summarizing and drafting responses to multi-topic emails",
+      "🤖 Extracting insights from varied document formats",
+      "🤖 Conversational Q&A over internal policy documents",
+      "🔀 Contract clause analysis with flagging for legal review"
+    ],
+    tradeoffs: [
+      {icon:"✅", text:"AI adapts to varied and complex inputs effectively"},
+      {icon:"✅", text:"Natural language understanding enables richer interaction"},
+      {icon:"⚠️", text:"Outputs should still be validated for critical decisions"},
+      {icon:"⚠️", text:"Cost and latency are higher than pure automation"}
+    ],
+    explanation: "Tasks here involve significant variability, unstructured data, or require contextual understanding that rigid rules cannot capture. AI agents are the natural fit — they can interpret nuance, handle varied formats, and reason about context. However, it's still wise to keep human oversight in the loop for high-stakes decisions and to define clear guardrails."
+  },
+  { // 86-100: Strong AI
+    zone: "AI Agent Zone", zoneClass: "zone-ai",
+    dims: ["Highly Variable","Unstructured","Contextual Reasoning","High Ambiguity"],
+    tasks: [
+      "🤖 Interactive knowledge base assistant for employee self-service",
+      "🤖 Generating tailored recommendations from unstructured research data",
+      "🤖 Multi-step reasoning across documents to answer complex queries",
+      "🤖 Drafting executive summaries from diverse meeting notes and reports"
+    ],
+    tradeoffs: [
+      {icon:"✅", text:"Only AI agents can handle this level of complexity"},
+      {icon:"✅", text:"Reasoning and learning capabilities are essential"},
+      {icon:"⚠️", text:"Requires robust governance, testing, and monitoring"},
+      {icon:"⚠️", text:"Higher cost — justified by the complexity of the task"}
+    ],
+    explanation: "At this end of the spectrum, tasks are inherently complex, ambiguous, and variable. They require understanding natural language, reasoning across multiple sources, and generating contextual responses. Automation flows cannot address these needs — AI agents are the right choice. Invest in proper guardrails, responsible AI practices, and human review to ensure reliability and trust."
+  }
+];
+
+function getDataIndex(val) {
+  if (val <= 15) return 0;
+  if (val <= 35) return 1;
+  if (val <= 65) return 2;
+  if (val <= 85) return 3;
+  return 4;
+}
+
+// ========== SLIDER HANDLER ==========
+const slider = document.getElementById("mainSlider");
+const zoneBadge = document.getElementById("zoneBadge");
+const tasksList = document.getElementById("tasksList");
+const tradeoffList = document.getElementById("tradeoffList");
+const explanationText = document.getElementById("explanationText");
+const dimLabels = [0,1,2,3].map(i => document.getElementById("dimLabel" + i));
+const dimCards = [0,1,2,3].map(i => document.getElementById("dim" + i));
+
+function updateSlider() {
+  const val = parseInt(slider.value);
+  const idx = getDataIndex(val);
+  const d = sliderData[idx];
+
+  // Zone badge
+  const zoneIcons = {0:"⚙️",1:"⚙️",2:"🔀",3:"🤖",4:"🤖"};
+  zoneBadge.textContent = zoneIcons[idx] + " " + d.zone + " — " + val + "%";
+  zoneBadge.className = "zone-badge " + d.zoneClass;
+
+  // Dimensions
+  d.dims.forEach((label, i) => {
+    dimLabels[i].textContent = label;
+    dimCards[i].className = "dim-card " + (val <= 35 ? "active-auto" : val >= 66 ? "active-ai" : "");
+  });
+
+  // Tasks
+  tasksList.innerHTML = d.tasks.map(t => "<li>" + t + "</li>").join("");
+
+  // Tradeoffs
+  tradeoffList.innerHTML = d.tradeoffs.map(t =>
+    '<li><span class="icon">' + t.icon + '</span> ' + t.text + '</li>'
+  ).join("");
+
+  // Explanation
+  explanationText.textContent = d.explanation;
+}
+
+slider.addEventListener("input", updateSlider);
+updateSlider(); // init
+
+// ========== QUICK ASSESSMENT ==========
+const qaAnswers = [null, null, null, null];
+// Scoring: Q0 yes=auto(0), Q1 yes=ai(1), Q2 yes=auto(0), Q3 yes=ai(1)
+const qaWeights = [0, 1, 0, 1]; // 0 = "yes" favors auto, 1 = "yes" favors ai
+
+function qaAnswer(qIndex, val, btn) {
+  qaAnswers[qIndex] = val;
+  // Update button styles
+  const parent = btn.parentElement;
+  parent.querySelectorAll(".qa-btn").forEach(b => {
+    b.classList.remove("selected-yes", "selected-no");
+  });
+  btn.classList.add(val === "yes" ? "selected-yes" : "selected-no");
+
+  // Check if all answered
+  if (qaAnswers.every(a => a !== null)) {
+    let aiScore = 0;
+    qaAnswers.forEach((a, i) => {
+      if (qaWeights[i] === 1 && a === "yes") aiScore++;
+      if (qaWeights[i] === 0 && a === "no") aiScore++;
+    });
+
+    const resultEl = document.getElementById("qaResult");
+    resultEl.style.display = "block";
+
+    if (aiScore <= 1) {
+      resultEl.className = "qa-result res-auto";
+      resultEl.innerHTML = "⚙️ <strong>Recommendation: Automation Flows</strong><br><span style='font-weight:400;font-size:0.9rem;'>Your task characteristics suggest a rule-based, deterministic automation flow would be most effective and cost-efficient.</span>";
+    } else if (aiScore <= 2) {
+      resultEl.className = "qa-result res-hybrid";
+      resultEl.innerHTML = "🔀 <strong>Recommendation: Hybrid Approach</strong><br><span style='font-weight:400;font-size:0.9rem;'>Your task has a mix of structured and contextual elements. Consider automating the core workflow and using AI for exception handling or interpretation.</span>";
+    } else {
+      resultEl.className = "qa-result res-ai";
+      resultEl.innerHTML = "🤖 <strong>Recommendation: AI Agent</strong><br><span style='font-weight:400;font-size:0.9rem;'>Your task involves significant ambiguity and contextual reasoning. An AI agent is well-suited — ensure proper governance and human oversight are in place.</span>";
+    }
+  }
+}
+</script>
+</body>
+</html>
